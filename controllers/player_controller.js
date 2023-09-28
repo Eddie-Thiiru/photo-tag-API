@@ -1,10 +1,12 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
+const World = require("../models/world");
 const Player = require("../models/player");
 
 exports.player_list_get = asyncHandler(async (req, res, next) => {
-  const players = await Player.find({ worldPhoto: req.params.id }).exec();
+  const world = await World.findOne({ worldName: req.params.name }).exec();
+  const players = await Player.find({ world: world._id }).exec();
 
   res.send(players);
 });
