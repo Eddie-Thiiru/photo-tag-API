@@ -5,8 +5,12 @@ const World = require("../models/world");
 const Player = require("../models/player");
 
 exports.player_list_get = asyncHandler(async (req, res, next) => {
-  const world = await World.findOne({ worldName: req.params.name }).exec();
-  const players = await Player.find({ world: world._id }).exec();
+  const players = await Player.find(
+    { worldName: req.params.name },
+    "playerName scoreTime timestamp"
+  )
+    .sort({ timestamp: 1 })
+    .exec();
 
   res.send(players);
 });
@@ -25,21 +29,25 @@ exports.player_create_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
 
-    // ***** CONFIRM IF WORLD IS CORRECT
     const player = new Player({
       playerName: req.body.playerName,
       scoreTime: req.body.scoreTime,
       timestamp: new Date(),
-      world: req.body.world._id,
+      worldName: req.params.name,
+      world: "",
     });
 
     if (!errors.isEmpty()) {
-      res.send(errors);
-      return;
+      return res.status(422).json({ errors: errors.array()[0].msg });
+    } else {
+      const world = await World.findOne({ worldName: req.params.name }).exec();
+
+      // add world ID to player
+      player.world = world._id;
+
+      await player.save();
+
+      res.send(player);
     }
-
-    await player.save();
-
-    res.send(player);
   }),
 ];

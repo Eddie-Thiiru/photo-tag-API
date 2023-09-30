@@ -5,7 +5,10 @@ const Character = require("../models/character");
 
 exports.character_list_get = asyncHandler(async (req, res, next) => {
   const world = await World.findOne({ worldName: req.params.name }).exec();
-  const characters = await Character.find({ world: world._id }).exec();
+  const characters = await Character.find(
+    { world: world._id },
+    "characterName positionX positionY "
+  ).exec();
 
   res.send(characters);
 });

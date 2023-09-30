@@ -52,12 +52,20 @@ async function characterCreate(index, name, positionX, positionY, world) {
   console.log(`Added ${name}`);
 }
 
-async function playerCreate(index, name, scoreTime, timestamp, world) {
+async function playerCreate(
+  index,
+  name,
+  scoreTime,
+  timestamp,
+  worldName,
+  world
+) {
   const player = new Player({
     playerName: name,
     scoreTime: scoreTime,
     timestamp: timestamp,
     world: world,
+    worldName: worldName,
   });
 
   await player.save();
@@ -92,11 +100,11 @@ async function createCharacters() {
 async function createPlayers() {
   console.log("Adding Players");
   await Promise.all([
-    playerCreate(0, "test1", 2000, new Date(), worlds[0]),
-    playerCreate(1, "test2", 3000, new Date(), worlds[1]),
-    playerCreate(2, "test3", 4000, new Date(), worlds[1]),
-    playerCreate(3, "test4", 5000, new Date(), worlds[2]),
-    playerCreate(4, "test5", 6000, new Date(), worlds[2]),
-    playerCreate(5, "test6", 7000, new Date(), worlds[2]),
+    playerCreate(0, "test1", 2000, new Date(), "prehisoria", worlds[0]),
+    playerCreate(1, "test2", 3000, new Date(), "isord", worlds[1]),
+    playerCreate(2, "test3", 4000, new Date(), "isord", worlds[1]),
+    playerCreate(3, "test4", 5000, new Date(), "memesupreme", worlds[2]),
+    playerCreate(4, "test5", 6000, new Date(), "memesupreme", worlds[2]),
+    playerCreate(5, "test6", 7000, new Date(), "memesupreme", worlds[2]),
   ]);
 }
